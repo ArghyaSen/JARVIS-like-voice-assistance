@@ -1,5 +1,5 @@
 # J.A.R.V.I.S. 🤖
-### Just A Rather Very Intelligent System
+### Offline Intelligent System
 
 A fully offline Jarvis-like voice assistant built with Python and Electron. Talk to it using your microphone or type messages — it responds with text and speech.
 
@@ -12,11 +12,10 @@ A fully offline Jarvis-like voice assistant built with Python and Electron. Talk
 - 💬 Conversation memory across the session
 - 🖥️ Sleek desktop UI built with Electron
 - ⌨️ Type or speak your queries
-- ⚡ Global hotkey `Ctrl+Shift+J` to trigger voice from anywhere
 
 ---
 
-## Tech Stack
+## Technology Used
 
 | Layer | Technology |
 |-------|-----------|
@@ -112,8 +111,3 @@ Run `start_jarvis.bat` from the root folder.
 
 ## Works 100% Offline
 Once set up, J.A.R.V.I.S. runs entirely on your local machine — no internet, no API keys, no subscriptions.
-
----
-
-## Credits
-Built with ❤️ using Ollama, FastAPI and Electron.
