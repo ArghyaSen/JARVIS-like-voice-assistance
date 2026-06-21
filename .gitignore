@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Node
+node_modules/
+package-lock.json
+
+# Ollama models
+*.bin
+*.gguf
