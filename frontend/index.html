@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>J.A.R.V.I.S.</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080c1a;
+      font-family: 'Courier New', monospace;
+      color: #80b8ff;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+      border-radius: 16px;
+    }
+
+    #app {
+      width: 100%;
+      height: 100vh;
+      background: rgba(8, 12, 28, 0.97);
+      border: 1px solid #1e90ff22;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 1.5rem 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 0 40px #1e90ff11;
+    }
+
+    /* ── Titlebar ── */
+    #titlebar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0 10px;
+      -webkit-app-region: drag;
+      flex-shrink: 0;
+      border-bottom: 1px solid #1e90ff11;
+      margin-bottom: 10px;
+    }
+
+    #titlebar .title {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: #1e90ffaa;
+    }
+
+    #titlebar .win-controls {
+      display: flex;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+
+    .win-btn {
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .win-btn:hover { opacity: 0.7; }
+    .win-btn.minimize { background: #f5a623; }
+    .win-btn.close    { background: #e74c3c; }
+
+    /* ── Status bar ── */
+    #statusbar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #1e90ff;
+      display: inline-block;
+      margin-right: 6px;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.2; }
+    }
+
+    #status-text {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: #1e90ffcc;
+    }
+
+    #clock {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: #1e90ff88;
+    }
+
+    /* ── Orb ── */
+    #orb-container {
+      position: relative;
+      width: 150px; height: 150px;
+      margin: 0.25rem 0 0.75rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid #1e90ff15;
+    }
+
+    .ring-1 { animation: spin 8s linear infinite;          border-top-color:    #1e90ff77; }
+    .ring-2 { animation: spin 13s linear infinite reverse; border-right-color:  #1e90ff55; inset: 8px; }
+    .ring-3 { animation: spin 6s linear infinite;          border-bottom-color: #1e90ff33; inset: 16px; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #orb-core {
+      position: absolute;
+      inset: 26px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #1a50bb, #08142e);
+      border: 1px solid #1e90ff55;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      transition: all 0.3s ease;
+    }
+
+    #orb-container.listening #orb-core {
+      background: radial-gradient(circle at 35% 35%, #1e60ee, #0a1a60);
+      border-color: #60b0ff;
+      animation: orb-pulse 0.7s ease-in-out infinite;
+    }
+
+    #orb-container.thinking #orb-core {
+      background: radial-gradient(circle at 35% 35%, #6030bb, #180840);
+      border-color: #9060ff;
+      animation: orb-pulse 1.2s ease-in-out infinite;
+    }
+
+    #orb-container.speaking #orb-core {
+      background: radial-gradient(circle at 35% 35%, #1a7050, #081e18);
+      border-color: #40d0a0;
+    }
+
+    @keyframes orb-pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.07); }
+    }
+
+    /* ── Wave bars ── */
+    #wave-bars {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 28px;
+      margin-bottom: 0.6rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      flex-shrink: 0;
+    }
+
+    #wave-bars.active { opacity: 1; }
+
+    .bar {
+      width: 3px;
+      border-radius: 2px;
+      background: #1e90ff;
+      animation: wave 0.8s ease-in-out infinite;
+    }
+
+    .bar:nth-child(1) { height: 8px;  animation-delay: 0.00s; }
+    .bar:nth-child(2) { height: 18px; animation-delay: 0.10s; }
+    .bar:nth-child(3) { height: 26px; animation-delay: 0.20s; }
+    .bar:nth-child(4) { height: 18px; animation-delay: 0.30s; }
+    .bar:nth-child(5) { height: 10px; animation-delay: 0.40s; }
+    .bar:nth-child(6) { height: 22px; animation-delay: 0.15s; }
+    .bar:nth-child(7) { height: 14px; animation-delay: 0.25s; }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.35); }
+      50%       { transform: scaleY(1); }
+    }
+
+    /* ── Chat transcript ── */
+    #transcript {
+      width: 100%;
+      flex: 1;
+      overflow-y: auto;
+      background: #060910;
+      border: 1px solid #1e90ff22;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    #transcript::-webkit-scrollbar { width: 3px; }
+    #transcript::-webkit-scrollbar-thumb { background: #1e90ff33; border-radius: 2px; }
+
+    .msg {
+      font-size: 13px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+
+    .msg.system {
+      color: #1e90ff88;
+      font-size: 11px;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .msg.user {
+      color: #90c8ff;
+    }
+
+    .msg.user::before {
+      content: 'YOU  ▸  ';
+      color: #1e90ff88;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+    }
+
+    .msg.assistant {
+      color: #90ddb0;
+    }
+
+    .msg.assistant::before {
+      content: 'J.A.R.V.I.S  ◈  ';
+      color: #40d0a088;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+    }
+
+    .msg.error {
+      color: #ff7070;
+      font-size: 11px;
+      font-style: italic;
+    }
+
+    /* ── Controls ── */
+    #controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    #input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: #060910;
+      border: 1px solid #1e90ff28;
+      border-radius: 10px;
+      padding: 0 12px;
+    }
+
+    #input-wrap input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #90c8ff;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      padding: 11px 0;
+    }
+
+    #input-wrap input::placeholder { color: #1e90ff33; }
+
+    .ctrl-btn {
+      background: #060910;
+      border: 1px solid #1e90ff28;
+      border-radius: 10px;
+      width: 42px; height: 42px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 17px;
+      color: #1e90ff99;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .ctrl-btn:hover {
+      background: #1e90ff11;
+      border-color: #1e90ff66;
+      color: #60b0ff;
+    }
+
+    #mic-btn.recording {
+      background: #1a2a70;
+      border-color: #60b0ff;
+      color: #90d0ff;
+      animation: orb-pulse 0.8s infinite;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- Titlebar -->
+  <div id="titlebar">
+    <span class="title">J.A.R.V.I.S. — SYSTEM ONLINE</span>
+    <div class="win-controls">
+      <button class="win-btn minimize" id="btn-minimize" title="Minimize"></button>
+      <button class="win-btn close"    id="btn-close"    title="Close"></button>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div id="statusbar">
+    <div>
+      <span class="status-dot"></span>
+      <span id="status-text">ONLINE</span>
+    </div>
+    <span id="clock"></span>
+  </div>
+
+  <!-- Orb -->
+  <div id="orb-container" title="Click to speak">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div id="orb-core">🧠</div>
+  </div>
+
+  <!-- Wave bars -->
+  <div id="wave-bars">
+    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+
+  <!-- Transcript -->
+  <div id="transcript">
+    <div class="msg system">System initialized. Click the orb or mic to speak.</div>
+  </div>
+
+  <!-- Controls -->
+  <div id="controls">
+    <button class="ctrl-btn" id="mic-btn"   title="Voice input">🎙️</button>
+    <div id="input-wrap">
+      <input type="text" id="text-input" placeholder="Type a message…" />
+    </div>
+    <button class="ctrl-btn" id="send-btn"  title="Send">➤</button>
+    <button class="ctrl-btn" id="clear-btn" title="Clear history">🗑</button>
+  </div>
+
+</div>
+<script src="renderer.js"></script>
+</body>
+</html>
