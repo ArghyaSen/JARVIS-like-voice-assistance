@@ -9,7 +9,6 @@ witty, and highly capable. Keep responses concise and conversational — 2-4 sen
 unless a longer answer is truly needed. Occasionally add dry British wit. 
 Respond in plain spoken sentences, no markdown, no bullet points."""
 
-
 async def ask_jarvis(user_message: str, history: list) -> tuple[str, list]:
     """
     Send a message to the local Ollama model and return the reply + updated history.
