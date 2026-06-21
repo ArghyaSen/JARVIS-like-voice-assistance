@@ -17,7 +17,6 @@ app.add_middleware(
 
 conversation_history = []
 
-
 class ChatRequest(BaseModel):
     message: str
 

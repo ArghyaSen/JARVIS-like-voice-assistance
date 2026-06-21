@@ -58,7 +58,6 @@ async def ask_jarvis(user_message: str, history: list) -> tuple[str, list]:
     except Exception as e:
         raise RuntimeError(f"Brain error: {e}")
 
-
 def clear_history() -> list:
     """Return a fresh empty history."""
     return []

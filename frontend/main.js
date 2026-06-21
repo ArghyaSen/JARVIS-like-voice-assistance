@@ -8,7 +8,6 @@ let pythonProcess;
 const BACKEND_URL = "http://127.0.0.1:8000";
 const PYTHON_ENTRY = path.join(__dirname, "../backend/main.py");
 
-
 // --- Start Python backend as a child process ---
 async function startPythonBackend() {
   // Check if backend is already running before spawning

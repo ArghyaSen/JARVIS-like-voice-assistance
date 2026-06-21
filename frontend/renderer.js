@@ -25,7 +25,6 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-
 // ── Orb state ──────────────────────────────────────────────────────────────
 const ORB_ICONS = {
   idle:      "🧠",

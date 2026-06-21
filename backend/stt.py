@@ -9,7 +9,6 @@ ENERGY_THRESHOLD = 300
 PAUSE_THRESHOLD = 0.8      
 PHRASE_LIMIT = 5           
 
-
 def _listen_blocking() -> str | None:
     """
     Blocking function that captures mic input and transcribes it offline

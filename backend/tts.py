@@ -28,7 +28,6 @@ def _speak_in_thread(text: str) -> None:
     except Exception as e:
         print(f"[TTS] Thread error: {e}")
 
-
 async def speak(text: str) -> None:
     """
     Spawn a dedicated thread for pyttsx3 and wait for it to finish.
